@@ -29,9 +29,14 @@ else()
 endif()
 
 
+# Project config header
+configure_file(edhelind_config.h.in edhelind_config.h)
+
 # Main executable
 add_executable(edhelind
     edhelind/main.cpp)
+
+target_include_directories(edhelind PUBLIC "${PROJECT_BINARY_DIR}")
 
 
 # Unit tests
