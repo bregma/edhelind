@@ -29,6 +29,14 @@ else()
 endif()
 
 
-# add the executable
+# Main executable
 add_executable(edhelind
     edhelind/main.cpp)
+
+
+# Unit tests
+enable_testing()
+add_executable(edhelind_test
+    test/test_main.cpp)
+
+add_test(NAME edhelind_test COMMAND edhelind_test)

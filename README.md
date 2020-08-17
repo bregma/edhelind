@@ -18,3 +18,12 @@ question.  Reaching out to a Sindarin transation of several useful phrases
 related to the inner workings of elves (there are not a large lexicon of Elvish
 terms for anatomical structures), I came up with "edhel ind," which can be
 mushed together into a pronouncable word, hence *edhelind*.
+
+Licensing
+---------
+
+**edhelind** is licensed under the GNU General Public License (version 3 or
+later) [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+**edhelind** uses the Catch2 test framework, licensed under the Boost Software
+Licensed 1.0 [BSL-1.0](https://github.com/catchorg/Catch2/blob/master/LICENSE.txt).
