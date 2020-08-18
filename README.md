@@ -25,5 +25,8 @@ Licensing
 **edhelind** is licensed under the GNU General Public License (version 3 or
 later) [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-**edhelind** uses the Catch2 test framework, licensed under the Boost Software
-Licensed 1.0 [BSL-1.0](https://github.com/catchorg/Catch2/blob/master/LICENSE.txt).
+The Catch2 test framework is licensed under the Boost Software
+License 1.0 [BSL-1.0](https://github.com/catchorg/Catch2/blob/master/LICENSE.txt).
+
+The Qt library is licensed under the GNU Lesser General Public License (version
+3) [LGPLv3](https://doc.qt.io/qt-5/lgpl.html).

@@ -1,5 +1,5 @@
 /**
- * Mainline entry for the automated developer-test suite.
+ * Main program window
  */
 /*
  * Copyright 2020 Stephen M. Webb <stephen.webb@bregmasoft.ca>
@@ -19,12 +19,40 @@
  * You should have received a copy of the GNU General Public License
  * along with Edhelind.  If not, see <https://www.gnu.org/licenses/>.
  */
+#ifndef EDHELIND_MAINWINDOW_H
+#define EDHELIND_MAINWINDOW_H
 
-#include <unistd.h>
-#define CATCH_CONFIG_RUNNER
-#include "catch.hpp"
+#include <QMainWindow>
 
-int main(int argc, char* argv[]) {
-    return Catch::Session().run(argc, argv);
+namespace Ui {
+class MainWindow;
 }
 
+class MainWindow
+: public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QString const& file_name, QWidget *parent = 0);
+    ~MainWindow();
+
+private slots:
+    void
+    on_action_open_triggered();
+
+    void
+    on_action_about_triggered();
+
+    void
+    on_action_exit_triggered();
+
+private:
+    void
+    set_current_file(QString const& file_name);
+
+private:
+    Ui::MainWindow* ui;
+};
+
+#endif /* EDHELIND_MAINWINDOW_H */

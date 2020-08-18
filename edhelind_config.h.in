@@ -4,21 +4,23 @@
 /*
  * Copyright 2020 Stephen M. Webb <stephen.webb@bregmasoft.ca>
  *
- * This file is part of Foobar.
+ * This file is part of Edhelind.
  *
- * Foobar is free software: you can redistribute it and/or modify
+ * Edhelind is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Foobar is distributed in the hope that it will be useful,
+ * Edhelind is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Edhelind.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define edhelind_VERSION_MAJOR @edhelind_VERSION_MAJOR@
-#define edhelind_VERSION_MINOR @edhelind_VERSION_MINOR@
+#define EDHELIND_PROJECT_NAME  "@PROJECT_NAME@"
+#define EDHELIND_VERSION       "@edhelind_VERSION@"
+#define EDHELIND_VERSION_MAJOR  @edhelind_VERSION_MAJOR@
+#define EDHELIND_VERSION_MINOR  @edhelind_VERSION_MINOR@
