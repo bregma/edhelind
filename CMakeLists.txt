@@ -21,39 +21,49 @@ cmake_minimum_required(VERSION 3.5)
 # set the project name
 project(edhelind VERSION 0.1)
 
-# compiler flags
+# Project-wide configuration
 if (MSVC)
     add_compile_options("/std:c++17")
 else()
     add_compile_options("-std=c++17" "-Wall" "-Wextra")
 endif()
 
-
-# Project config header
 configure_file(edhelind_config.h.in edhelind_config.h)
 
+include_directories(edhelind PUBLIC
+    "${PROJECT_BINARY_DIR}"
+    "${CMAKE_SOURCE_DIR}")
 
-# Qt setup
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 
-# Main executable
+# The edhelind library
+add_library(libedhel STATIC
+    libedhel/elffile.cpp
+    libedhel/elfimage.cpp
+    libedhel/elfheader.cpp
+    libedhel/section.cpp
+    libedhel/sectiontable.cpp
+    libedhel/section_strtab.cpp)
+
+
+# Main GUI executable
 add_executable(edhelind
     edhelind/main.cpp
     edhelind/mainwindow.cpp)
 
-target_include_directories(edhelind PUBLIC
-    "${PROJECT_BINARY_DIR}"
-    "${CMAKE_SOURCE_DIR}")
-
-target_link_libraries(edhelind Qt5::Widgets)
+target_link_libraries(edhelind Qt5::Widgets libedhel)
 
 
 # Unit tests
 enable_testing()
 add_executable(edhelind_test
-    test/test_main.cpp)
+    test/test_main.cpp
+    test/test_elfimage.cpp
+    test/test_elffile.cpp)
+
+target_link_libraries(edhelind_test libedhel)
 
 add_test(NAME edhelind_test COMMAND edhelind_test)
