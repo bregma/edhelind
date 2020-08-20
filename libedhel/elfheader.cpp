@@ -19,7 +19,11 @@
 #include "libedhel/elfheader.h"
 
 #include <cstring>
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
+#include <type_traits>
+
 
 namespace {
     constexpr std::size_t ehdr32_magic_offset = offsetof(Elf32_Ehdr, ei_magic);
@@ -55,6 +59,20 @@ namespace {
     constexpr std::size_t ehdr64_shentsize_offset = offsetof(Elf64_Ehdr, e_shentsize);
     constexpr std::size_t ehdr64_shnum_offset = offsetof(Elf64_Ehdr, e_shnum);
     constexpr std::size_t ehdr64_shstrndx_offset = offsetof(Elf64_Ehdr, e_shstrndx);
+
+    struct EHTypeMap {
+        eh_type     type_;
+        std::string name_;
+    };
+
+    std::vector<EHTypeMap> type_name_mapping {
+        { eh_type::ET_NONE, "ET_NONE" },
+        { eh_type::ET_REL,  "ET_REL" },
+        { eh_type::ET_EXEC, "ET_EXEC" },
+        { eh_type::ET_DYN,  "ET_DYN" },
+        { eh_type::ET_CORE, "ET_CORE" },
+    };
+
 } // anonymous
 
 
@@ -109,6 +127,29 @@ type() const
 {
     return static_cast<eh_type>(m_imageView.get_uint16(ehdr32_type_offset));
 }
+
+
+std::string ElfHeader::
+type_string() const
+{
+    using std::ostringstream;
+    using std::showbase;
+    using std::hex;
+    using std::underlying_type;
+
+    eh_type type{this->type()};
+    for (auto const& it: type_name_mapping) {
+        if (it.type_ == type) {
+            return it.name_;
+        }
+    }
+    ostringstream ostr;
+    ostr << "unknown ("
+         << showbase << hex << static_cast<underlying_type<eh_type>::type>(type)
+         << ")";
+    return ostr.str();
+}
+
 
 eh_machine ElfHeader::
 machine() const

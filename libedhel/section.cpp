@@ -32,7 +32,7 @@ namespace
         std::string name_;
     }; 
 
-    std::vector<TypeNameMapping> typeNameMapping {
+    std::vector<TypeNameMapping> type_name_mapping {
         { s_type::SHT_NULL,           "SHT_NULL" },
         { s_type::SHT_PROGBITS,       "SHT_PROGBITS" },
         { s_type::SHT_SYMTAB,         "SHT_SYMTAB" },
@@ -105,7 +105,7 @@ name() const
 }
 
 std::string Section::
-nameString() const
+name_string() const
 {
     auto shstrndx = m_elfFile->elf_header().shstrndx();
     auto const& strtab = dynamic_cast<Section_STRTAB const&>(m_elfFile->section(shstrndx));
@@ -121,11 +121,11 @@ type() const
 
 
 std::string Section::
-typeString() const
+type_string() const
 {
-    auto it = std::find_if(typeNameMapping.begin(), typeNameMapping.end(),
+    auto it = std::find_if(type_name_mapping.begin(), type_name_mapping.end(),
                            [this](auto const& lhs) { return lhs.type_ == this->type(); });
-    if (it != typeNameMapping.end())
+    if (it != type_name_mapping.end())
     {
         return it->name_;
     }
@@ -194,7 +194,7 @@ entsize() const
 std::ostream& Section::
 printTo(std::ostream& ostr) const
 {
-    ostr << nameString() << '\t' << typeString()
+    ostr << name_string() << '\t' << type_string()
          << '\t' << "offset=" << std::showbase << std::hex << offset()
          << '\t' << "size=" << std::dec << size()
          << '\n';

@@ -40,14 +40,14 @@ public:
 
     /**! The name of the section name as a string */
     std::string
-    nameString() const;
+    name_string() const;
 
     s_type
     type() const;
 
     /**! The type of the section name as a string */
     std::string
-    typeString() const;
+    type_string() const;
 
     std::uint64_t
     flags() const;

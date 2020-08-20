@@ -51,6 +51,13 @@ section(std::uint32_t index) const
 }
 
 
+SectionTable const& ElfFile::
+section_table() const
+{
+    return section_table_;
+}
+
+
 ElfImageView ElfFile::
 view(std::size_t offset, std::size_t size) const
 {

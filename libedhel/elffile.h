@@ -51,6 +51,9 @@ public:
     Section const&
     section(std::uint32_t index) const;
 
+    SectionTable const&
+    section_table() const;
+
     /*! Get a view into the file image */
     ElfImageView
     view(std::size_t offset, std::size_t size) const;

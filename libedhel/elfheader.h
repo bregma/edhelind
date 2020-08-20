@@ -45,6 +45,9 @@ public:
     eh_type
     type() const;
 
+    std::string
+    type_string() const;
+
     /** Processor architecture */
     eh_machine
     machine() const;

@@ -20,6 +20,7 @@
 #define EDHELIND_SECTIONTABLE_H
 
 #include "libedhel/elfimage.h"
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -41,6 +42,9 @@ public:
     /*! Get indicated section */
     Section const&
     section(std::uint32_t index) const;
+
+    void
+    iterate_sections(std::function<void(Section const&)>) const;
 
 private:
     using OwningSectionPtr = std::unique_ptr<Section>;

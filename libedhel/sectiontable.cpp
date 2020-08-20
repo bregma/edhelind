@@ -88,3 +88,12 @@ section(std::uint32_t index) const
     return *sections_[index];
 }
 
+
+void SectionTable::
+iterate_sections(std::function<void(Section const&)> visit) const
+{
+    for (auto const& section: sections_)
+    {
+        visit(*section);
+    }
+}

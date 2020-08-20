@@ -22,11 +22,17 @@
 #ifndef EDHELIND_MAINWINDOW_H
 #define EDHELIND_MAINWINDOW_H
 
+#include <memory>
 #include <QMainWindow>
 
+
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
+
+class ElfFile;
+class QStandardItem;
+class QStandardItemModel;
 
 class MainWindow
 : public QMainWindow
@@ -51,8 +57,19 @@ private:
     void
     set_current_file(QString const& file_name);
 
+    QStandardItem*
+    display_elf_header() const;
+
+    QStandardItem*
+    display_sections() const;
+
+    QList<QStandardItem*>
+    prepare_row(QString const& label, QString const& value) const;
+
 private:
-    Ui::MainWindow* ui;
+    std::unique_ptr<Ui::MainWindow> ui_;
+    std::unique_ptr<ElfFile>        elf_file_;
+    QStandardItemModel*             tree_model_;
 };
 
 #endif /* EDHELIND_MAINWINDOW_H */
