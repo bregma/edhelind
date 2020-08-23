@@ -22,6 +22,7 @@
 #include "libedhel/elfheader.h"
 #include "libedhel/elfimage.h"
 #include "libedhel/sectiontable.h"
+#include "libedhel/segmenttable.h"
 #include <string>
 
 
@@ -54,6 +55,9 @@ public:
     SectionTable const&
     section_table() const;
 
+    SegmentTable const&
+    segment_table() const;
+
     /*! Get a view into the file image */
     ElfImageView
     view(std::size_t offset, std::size_t size) const;
@@ -73,6 +77,7 @@ private:
     ElfHeader     elf_header_;
     EndianSetter  set_endianness_;
     SectionTable  section_table_;
+    SegmentTable  segment_table_;
 };
 
 #endif /* EDHELIND_ELFFILE_H */

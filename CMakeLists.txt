@@ -47,7 +47,9 @@ add_library(libedhel STATIC
     libedhel/elfheader.cpp
     libedhel/section.cpp
     libedhel/sectiontable.cpp
-    libedhel/section_strtab.cpp)
+    libedhel/section_strtab.cpp
+    libedhel/segment.cpp
+    libedhel/segmenttable.cpp)
 
 
 # Main GUI executable

@@ -23,6 +23,7 @@
 
 #include "libedhel/elffile.h"
 #include "libedhel/section.h"
+#include "libedhel/segment.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -102,6 +103,7 @@ set_current_file(QString const& file_name)
     root->appendRow(file_row);
     file_row.first()->appendRow(this->display_elf_header());
     file_row.first()->appendRow(this->display_sections());
+    file_row.first()->appendRow(this->display_segments());
     ui_->tree_view_->setModel(tree_model_);
     ui_->tree_view_->expandAll();
     ui_->tree_view_->resizeColumnToContents(0);
@@ -147,6 +149,24 @@ display_sections() const
             sections->appendRow(sec);
        });
     return sections;
+}
+
+
+QStandardItem* MainWindow::
+display_segments() const
+{
+    QStandardItem* segments = new QStandardItem("Segments");
+    elf_file_->segment_table().iterate_segments([&](Segment const& segment){
+            QStandardItem* seg = new QStandardItem(QString::fromStdString(segment.type_string()));
+            seg->appendRow(this->prepare_row("p_offset:", QString("0x%1").arg(segment.offset(), 8, 16, QChar('0'))));
+            seg->appendRow(this->prepare_row("p_vaddr:", QString("0x%1").arg(segment.vaddr(), 8, 16, QChar('0'))));
+            seg->appendRow(this->prepare_row("p_paddr:", QString("0x%1").arg(segment.paddr(), 8, 16, QChar('0'))));
+            seg->appendRow(this->prepare_row("p_filesz:", QString("%1").arg(segment.filesz(), 8, 10)));
+            seg->appendRow(this->prepare_row("p_memsz:", QString("%1").arg(segment.memsz(), 8, 10)));
+            seg->appendRow(this->prepare_row("p_align:", QString("%1").arg(segment.align(), 8, 10)));
+            segments->appendRow(seg);
+       });
+    return segments;
 }
 
 

@@ -63,6 +63,9 @@ private:
     QStandardItem*
     display_sections() const;
 
+    QStandardItem*
+    display_segments() const;
+
     QList<QStandardItem*>
     prepare_row(QString const& label, QString const& value) const;
 

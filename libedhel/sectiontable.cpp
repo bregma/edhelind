@@ -1,6 +1,3 @@
-#ifndef SMW_DEBUG
-# include <iostream>
-#endif
 /*
  * Copyright 2020  Stephen M. Webb <stephen.webb@bregmasoft.ca>
  * 
@@ -57,11 +54,6 @@ SectionTable(ElfFile const& elfFile)
         
         shoff += shentsize;
     }
-#ifndef SMW_DEBUG
-    for (auto const& section: sections_) {
-        std::cerr << "-+- section -=-\n" << *section << "-=- end section -=-\n";
-    }
-#endif
 }
 
 

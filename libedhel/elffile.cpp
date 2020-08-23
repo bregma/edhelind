@@ -26,6 +26,7 @@ ElfFile(std::string const& file_name)
 , elf_header_(elf_image_.view(0, 56))
 , set_endianness_(elf_header_, elf_image_)
 , section_table_(*this)
+, segment_table_(*this)
 {
 }
 
@@ -55,6 +56,13 @@ SectionTable const& ElfFile::
 section_table() const
 {
     return section_table_;
+}
+
+
+SegmentTable const& ElfFile::
+segment_table() const
+{
+    return segment_table_;
 }
 
 

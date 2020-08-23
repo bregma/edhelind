@@ -269,5 +269,63 @@ struct Elf64_Shdr
 };
 static_assert(sizeof(Elf64_Shdr) == 64, "invalid 64-bit section header size");
 
+/** @todo add extension-range predicates instead of enum values */
+enum class PType: std::uint32_t {
+    PT_NULL = 0,                /**> Program header table,entry unused */
+    PT_LOAD = 1,                /**> Loadable,program segment */
+    PT_DYNAMIC = 2,             /**> Dynamic,linking information */
+    PT_INTERP = 3,              /**> Program interpreter */
+    PT_NOTE = 4,                /**> Auxiliary information */
+    PT_SHLIB = 5,               /**> Reserved,*/
+    PT_PHDR = 6,                /**> Entry for header table,itself */
+    PT_TLS = 7,                 /**> Thread-local storage,segment */
+    PT_LOOS = 0x60000000,       /**> Start of OS-specific */
+    PT_GNU_EH_FRAME = 0x6474e550, /**> GCC .eh_frame_hdr segment */
+    PT_GNU_STACK = 0x6474e551,  /**> Indicates stack executability */
+    PT_GNU_RELRO = 0x6474e552,  /**> Read-only after relocation */
+    PT_LOSUNW = 0x6ffffffa,
+    PT_SUNWBSS = 0x6ffffffa,    /**> Sun Specific segment */
+    PT_SUNWSTACK = 0x6ffffffb,  /**> Stack segment */
+    PT_HISUNW = 0x6fffffff,
+    PT_HIOS = 0x6fffffff,       /**> End of OS-specific */
+    PT_LOPROC = 0x70000000,     /**> Start of processor-specific */
+    PT_HIPROC = 0x7fffffff,     /**> End of processor-specific */
+};
+
+/** @todo make this a bitset with extension-range predicates */
+enum class PFlags: std::uint32_t {
+    PF_X = (1 << 0),            /**> Segment is executable */
+    PF_W = (1 << 1),            /**> Segment is writable */
+    PF_R = (1 << 2),            /**> Segment is readable */
+    PF_MASKOS = 0x0ff00000,     /**> OS-specific */
+    PF_MASKPROC = 0xf0000000,   /**> Processor-specific */
+};
+
+struct Elf32_Phdr
+{
+    PType         p_type;
+    std::uint32_t p_offset;
+    std::uint32_t p_vaddr;
+    std::uint32_t p_paddr;
+    std::uint32_t p_filesz;
+    std::uint32_t p_memsz;
+    PFlags        p_flags;
+    std::uint32_t p_align;
+};
+static_assert(sizeof(Elf32_Phdr) == 32, "invalid 32-bit ELF PHDR size");
+
+struct Elf64_Phdr
+{
+    PType         p_type;
+    PFlags        p_flags;
+    std::uint64_t p_offset;
+    std::uint64_t p_vaddr;
+    std::uint64_t p_paddr;
+    std::uint64_t p_filesz;
+    std::uint64_t p_memsz;
+    std::uint64_t p_align;
+};
+static_assert(sizeof(Elf64_Phdr) == 56, "invalid 64-bit ELF PHDR size");
+
 #endif /* EDHELIND_ELF_H */
 
