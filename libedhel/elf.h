@@ -53,7 +53,7 @@
 constexpr std::uint8_t elf_magic[] = { '\177', 'E', 'L', 'F' };
 
 /** Classification of internal srtucture sizes */
-enum class ehi_class: std::uint8_t
+enum class EhiClass: std::uint8_t
 {
     ELFCLASSNONE = 0,   /**< invalid class */
     ELFCLASS32 = 1,     /**< 32-bit objects */
@@ -61,21 +61,21 @@ enum class ehi_class: std::uint8_t
 };
 
 /** The byte ordering of words within the file */
-enum class ehi_data: std::uint8_t
+enum class EhiData: std::uint8_t
 {
     ELFDATANONE = 0,    /**< invalid data encoding */
     ELFDATA2LSB = 1,    /**< twos-complement little-endian */
     ELFDATA2MSB = 2,    /**< twos-complement big-endian */
 };
 
-enum class ehi_version: std::uint8_t
+enum class EhiVersion: std::uint8_t
 {
     EV_NONE = 0,
     EV_CURRENT = 1,
 };
 
 /** The target operating system */
-enum class ehi_osabi: std::uint8_t
+enum class EhiOsAbi: std::uint8_t
 {
     EO_SYSV = 0,        /**< AT&T System V */
     EO_HPUX = 1,        /**< Hewlett-Packaerd HP-UX */
@@ -101,7 +101,7 @@ enum class ehi_osabi: std::uint8_t
 
 
 /** Intended use of the ELF file */
-enum class eh_type: std::uint16_t
+enum class EhType: std::uint16_t
 {
     ET_NONE = 0,        /**< no file type */
     ET_REL = 1,         /**< relocatable (object) file */
@@ -111,7 +111,7 @@ enum class eh_type: std::uint16_t
 };
 
 /** Target machine architecture */
-enum class eh_machine: std::uint16_t
+enum class EhMachine: std::uint16_t
 {
     EM_NONE = 0,        /**< no machine */
     EM_M32 = 1,         /**< AT&T WE 32100 */
@@ -135,13 +135,13 @@ enum class eh_machine: std::uint16_t
 
 struct Elf32_Ehdr {
     std::uint8_t  ei_magic[4];
-    ehi_class     ei_class;
-    ehi_data      ei_data;
-    ehi_version   ei_version;
-    ehi_osabi     ei_osabi;
+    EhiClass      ei_class;
+    EhiData       ei_data;
+    EhiVersion    ei_version;
+    EhiOsAbi      ei_osabi;
     std::byte     ei_pad[8];
-    eh_type       e_type;
-    eh_machine    e_machine;
+    EhType        e_type;
+    EhMachine     e_machine;
     std::uint32_t e_version;
     std::uint32_t e_entry;  /* Entry point */
     std::uint32_t e_phoff;
@@ -158,13 +158,13 @@ static_assert(sizeof(Elf32_Ehdr) == 52, "invalid 32-bit ELF header size");
 
 struct Elf64_Ehdr {
     std::uint8_t  ei_magic[4];
-    ehi_class     ei_class;
-    ehi_data      ei_data;
-    ehi_version   ei_version;
-    ehi_osabi     ei_osabi;
+    EhiClass      ei_class;
+    EhiData       ei_data;
+    EhiVersion    ei_version;
+    EhiOsAbi      ei_osabi;
     std::byte     ei_pad[8];
-    eh_type       e_type;
-    eh_machine    e_machine;
+    EhType        e_type;
+    EhMachine     e_machine;
     std::uint32_t e_version;
     std::uint64_t e_entry;		/* Entry point virtual address */
     std::uint64_t e_phoff;		/* Program header table file offset */
@@ -186,7 +186,7 @@ static_assert(sizeof(Elf64_Ehdr) == 64, "invalid 64-bit ELF header size");
  * @{
  */
 
-enum class s_type: std::uint32_t
+enum class SType: std::uint32_t
 {
     SHT_NULL           = 0,  /*!< unused */
     SHT_PROGBITS       = 1,  /*!< program data */
@@ -242,7 +242,7 @@ enum section_flags
 struct Elf32_Shdr
 {
     std::uint32_t sh_name;
-    s_type        sh_type;
+    SType         sh_type;
     std::uint32_t sh_flags;
     std::uint32_t sh_addr;
     std::uint32_t sh_offset;
@@ -257,7 +257,7 @@ static_assert(sizeof(Elf32_Shdr) == 40, "invalid 32-bit section header size");
 struct Elf64_Shdr
 {
     std::uint32_t sh_name;
-    s_type        sh_type;
+    SType         sh_type;
     std::uint64_t sh_flags;
     std::uint64_t sh_addr;
     std::uint64_t sh_offset;

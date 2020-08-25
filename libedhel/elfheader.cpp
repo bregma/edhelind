@@ -61,36 +61,36 @@ namespace {
     constexpr std::size_t ehdr64_shstrndx_offset = offsetof(Elf64_Ehdr, e_shstrndx);
 
     struct EHTypeMap {
-        eh_type     type_;
+        EhType     type_;
         std::string name_;
     };
 
     std::vector<EHTypeMap> type_name_mapping {
-        { eh_type::ET_NONE, "ET_NONE" },
-        { eh_type::ET_REL,  "ET_REL" },
-        { eh_type::ET_EXEC, "ET_EXEC" },
-        { eh_type::ET_DYN,  "ET_DYN" },
-        { eh_type::ET_CORE, "ET_CORE" },
+        { EhType::ET_NONE, "ET_NONE" },
+        { EhType::ET_REL,  "ET_REL" },
+        { EhType::ET_EXEC, "ET_EXEC" },
+        { EhType::ET_DYN,  "ET_DYN" },
+        { EhType::ET_CORE, "ET_CORE" },
     };
 
 } // anonymous
 
 
 ElfHeader::
-ElfHeader(ElfImageView const& imageView)
-: m_imageView(imageView)
+ElfHeader(ElfImageView const& image_view)
+: image_view_(image_view)
 {
     // See https://www.muppetlabs.com/~breadbox/software/tiny/teensy.html for a
     // description of the smallest (although invalid) ELF file loadable by the
     // 32-bit Linux kernel.  This value might be larger or smaller on other
     // target CPUs or operating systems.
-    if (m_imageView.size() < 45)
+    if (image_view_.size() < 45)
     {
         throw std::runtime_error("The file is too small to be an ELF binary");
     }
 
     // Validate the magic
-    if (std::memcmp(m_imageView.get_bytes(ehdr32_magic_offset),
+    if (std::memcmp(image_view_.get_bytes(ehdr32_magic_offset),
                     elf_magic, sizeof(elf_magic)) != 0)
     {
         throw std::runtime_error("The file does not start with ELF magic.");
@@ -102,8 +102,8 @@ bool ElfHeader::
 is64() const
 {
     std::size_t class_offset = ehdr32_class_offset;
-    ehi_class e_class = static_cast<ehi_class>(m_imageView.get_uint8(class_offset));
-    return (e_class == ehi_class::ELFCLASS64);
+    EhiClass e_class = static_cast<EhiClass>(image_view_.get_uint8(class_offset));
+    return (e_class == EhiClass::ELFCLASS64);
 }
 
 
@@ -111,21 +111,21 @@ bool ElfHeader::
 isLE() const
 {
     std::size_t encoding_offset = ehdr32_encoding_offset;
-    ehi_data e_encoding = static_cast<ehi_data>(m_imageView.get_uint8(encoding_offset));
-    return (e_encoding == ehi_data::ELFDATA2LSB);
+    EhiData e_encoding = static_cast<EhiData>(image_view_.get_uint8(encoding_offset));
+    return (e_encoding == EhiData::ELFDATA2LSB);
 }
 
 
-ehi_osabi ElfHeader::
+EhiOsAbi ElfHeader::
 osabi() const
 {
-    return static_cast<ehi_osabi>(m_imageView.get_uint8(ehdr32_osabi_offset));
+    return static_cast<EhiOsAbi>(image_view_.get_uint8(ehdr32_osabi_offset));
 }
 
-eh_type ElfHeader::
+EhType ElfHeader::
 type() const
 {
-    return static_cast<eh_type>(m_imageView.get_uint16(ehdr32_type_offset));
+    return static_cast<EhType>(image_view_.get_uint16(ehdr32_type_offset));
 }
 
 
@@ -137,7 +137,7 @@ type_string() const
     using std::hex;
     using std::underlying_type;
 
-    eh_type type{this->type()};
+    EhType type{this->type()};
     for (auto const& it: type_name_mapping) {
         if (it.type_ == type) {
             return it.name_;
@@ -145,103 +145,103 @@ type_string() const
     }
     ostringstream ostr;
     ostr << "unknown ("
-         << showbase << hex << static_cast<underlying_type<eh_type>::type>(type)
+         << showbase << hex << static_cast<underlying_type<EhType>::type>(type)
          << ")";
     return ostr.str();
 }
 
 
-eh_machine ElfHeader::
+EhMachine ElfHeader::
 machine() const
 {
-    return static_cast<eh_machine>(m_imageView.get_uint16(ehdr32_machine_offset));
+    return static_cast<EhMachine>(image_view_.get_uint16(ehdr32_machine_offset));
 }
 
 
 std::uint32_t ElfHeader::
 version() const
 {
-    return m_imageView.get_uint16(ehdr32_version_offset);
+    return image_view_.get_uint16(ehdr32_version_offset);
 }
 
 
 std::uint64_t ElfHeader::
 entry() const
 {
-    return is64() ? m_imageView.get_uint64(ehdr64_entry_offset)
-                  : m_imageView.get_uint32(ehdr32_entry_offset);
+    return is64() ? image_view_.get_uint64(ehdr64_entry_offset)
+                  : image_view_.get_uint32(ehdr32_entry_offset);
 }
 
 
 std::uint64_t ElfHeader::
 phoff() const
 {
-    return is64() ? m_imageView.get_uint64(ehdr64_phoff_offset)
-                  : m_imageView.get_uint32(ehdr32_phoff_offset);
+    return is64() ? image_view_.get_uint64(ehdr64_phoff_offset)
+                  : image_view_.get_uint32(ehdr32_phoff_offset);
 }
 
 
 std::uint64_t ElfHeader::
 shoff() const
 {
-    return is64() ? m_imageView.get_uint64(ehdr64_shoff_offset)
-                  : m_imageView.get_uint32(ehdr32_shoff_offset);
+    return is64() ? image_view_.get_uint64(ehdr64_shoff_offset)
+                  : image_view_.get_uint32(ehdr32_shoff_offset);
 }
 
 
 std::uint32_t ElfHeader::
 flags() const
 {
-    return is64() ? m_imageView.get_uint32(ehdr64_flags_offset)
-                  : m_imageView.get_uint32(ehdr32_flags_offset);
+    return is64() ? image_view_.get_uint32(ehdr64_flags_offset)
+                  : image_view_.get_uint32(ehdr32_flags_offset);
 }
 
 
 std::uint16_t ElfHeader::
 ehsize() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_ehsize_offset)
-                  : m_imageView.get_uint16(ehdr32_ehsize_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_ehsize_offset)
+                  : image_view_.get_uint16(ehdr32_ehsize_offset);
 }
 
 
 std::uint16_t ElfHeader::
 phentsize() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_phentsize_offset)
-                  : m_imageView.get_uint16(ehdr32_phentsize_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_phentsize_offset)
+                  : image_view_.get_uint16(ehdr32_phentsize_offset);
 }
 
 
 std::uint16_t ElfHeader::
 phnum() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_phnum_offset)
-                  : m_imageView.get_uint16(ehdr32_phnum_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_phnum_offset)
+                  : image_view_.get_uint16(ehdr32_phnum_offset);
 }
 
 
 std::uint16_t ElfHeader::
 shentsize() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_shentsize_offset)
-                  : m_imageView.get_uint16(ehdr32_shentsize_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_shentsize_offset)
+                  : image_view_.get_uint16(ehdr32_shentsize_offset);
 }
 
 
 std::uint16_t ElfHeader::
 shnum() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_shnum_offset)
-                  : m_imageView.get_uint16(ehdr32_shnum_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_shnum_offset)
+                  : image_view_.get_uint16(ehdr32_shnum_offset);
 }
 
 
 std::uint16_t ElfHeader::
 shstrndx() const
 {
-    return is64() ? m_imageView.get_uint16(ehdr64_shstrndx_offset)
-                  : m_imageView.get_uint16(ehdr32_shstrndx_offset);
+    return is64() ? image_view_.get_uint16(ehdr64_shstrndx_offset)
+                  : image_view_.get_uint16(ehdr32_shstrndx_offset);
 }
 
 

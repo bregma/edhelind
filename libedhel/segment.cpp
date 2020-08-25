@@ -95,7 +95,7 @@ type_string() const
     }
     ostringstream ostr;
     ostr << "unknown ("
-         << showbase << hex << static_cast<underlying_type<eh_type>::type>(type)
+         << showbase << hex << static_cast<underlying_type<EhType>::type>(type)
          << ")";
     return ostr.str();
 }

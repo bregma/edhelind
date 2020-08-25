@@ -43,7 +43,7 @@ SectionTable(ElfFile const& elfFile)
         Section tmpSection(elfFile, sectionView);
         switch (tmpSection.type())
         {
-            case s_type::SHT_STRTAB:
+            case SType::SHT_STRTAB:
                 sections_.emplace_back(std::make_unique<Section_STRTAB>(elfFile, sectionView));
                 break;
 

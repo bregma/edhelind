@@ -29,7 +29,7 @@ class Section_STRTAB
 : public Section
 {
 public:
-    Section_STRTAB(ElfFile const& elfFile, ElfImageView const& imageView);
+    Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view);
 
     /*! Retrieve the string at @p index */
     std::string
@@ -39,7 +39,7 @@ public:
     printTo(std::ostream& ostr) const override;
 
 private:
-    ElfImageView m_stringTable;
+    ElfImageView string_table_;
 };
 
 #endif /* EDHELIND_SECTION_STRTAB_H */

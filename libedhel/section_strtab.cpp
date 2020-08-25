@@ -23,9 +23,9 @@
 
 
 Section_STRTAB::
-Section_STRTAB(ElfFile const& elfFile, ElfImageView const& imageView)
-: Section(elfFile, imageView)
-, m_stringTable(elfFile.view(this->offset(), this->size()))
+Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view)
+: Section(elf_file, image_view)
+, string_table_(elf_file.view(this->offset(), this->size()))
 {
 }
 
@@ -33,7 +33,7 @@ Section_STRTAB(ElfFile const& elfFile, ElfImageView const& imageView)
 std::string Section_STRTAB::
 string(std::uint32_t index) const
 {
-    return m_stringTable.get_string(index, std::string::npos);
+    return string_table_.get_string(index, std::string::npos);
 }
 
 

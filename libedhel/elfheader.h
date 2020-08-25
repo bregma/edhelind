@@ -38,18 +38,18 @@ public:
     isLE() const;
 
     /** Operating system-specific ABI */
-    ehi_osabi
+    EhiOsAbi
     osabi() const;
 
     /** ELF file type */
-    eh_type
+    EhType
     type() const;
 
     std::string
     type_string() const;
 
     /** Processor architecture */
-    eh_machine
+    EhMachine
     machine() const;
 
     /** ELF version */
@@ -97,7 +97,7 @@ public:
     shstrndx() const;
 
 private:
-    ElfImageView m_imageView;
+    ElfImageView image_view_;
 };
 
 #endif /* EDHELIND_ELFHEADER_H */

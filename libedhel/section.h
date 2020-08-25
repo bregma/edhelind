@@ -42,7 +42,7 @@ public:
     std::string
     name_string() const;
 
-    s_type
+    SType
     type() const;
 
     /**! The type of the section name as a string */
@@ -82,9 +82,9 @@ private:
     Section& operator=(Section const&) = delete;
 
 private:
-    ElfFile const* m_elfFile;
-    ElfImageView   m_imageView;
-    bool           m_is64bit;
+    ElfFile const* elf_file_;
+    ElfImageView   image_view_;
+    bool           is_64bit_;
 };
 
 
