@@ -19,6 +19,7 @@
 #ifndef EDHELIND_SEGMENT_H
 #define EDHELIND_SEGMENT_H
 
+#include "libedhel/detailable.h"
 #include "libedhel/elf.h"
 #include "libedhel/elfimage.h"
 #include <iosfwd>
@@ -28,6 +29,7 @@ class ElfFile;
 
 
 class Segment
+: public Detailable
 {
 public:
     Segment(ElfFile const& elfFile, ElfImageView const& imageView);
@@ -62,8 +64,12 @@ public:
     std::uint64_t
     align() const;
 
+private:
     virtual std::ostream&
-    printTo(std::ostream&) const;
+    printTo(std::ostream&) const override;
+
+    virtual std::ostream&
+    printDetailTo(std::ostream&) const;
 
 private:
     Segment(Segment const&) = delete;
@@ -75,12 +81,5 @@ private:
     ElfImageView   image_view_;
     bool           is_64bit_;
 };
-
-
-inline std::ostream&
-operator<<(std::ostream& ostr, Segment const& segment)
-{
-    return segment.printTo(ostr);
-}
 
 #endif /* EDHELIND_SEGMENT_H */

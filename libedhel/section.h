@@ -19,15 +19,16 @@
 #ifndef EDHELIND_SECTION_H
 #define EDHELIND_SECTION_H
 
+#include "libedhel/detailable.h"
 #include "libedhel/elf.h"
 #include "libedhel/elfimage.h"
-#include <iosfwd>
 
 
 class ElfFile;
 
 
 class Section
+: public Detailable
 {
 public:
     Section(ElfFile const& elfFile, ElfImageView const& imageView);
@@ -73,13 +74,16 @@ public:
     std::uint64_t
     entsize() const;
 
-    virtual std::ostream&
-    printTo(std::ostream&) const;
-
 private:
     Section(Section const&) = delete;
     Section(Section const&&) = delete;
     Section& operator=(Section const&) = delete;
+
+    virtual std::ostream&
+    printTo(std::ostream&) const override;
+
+    virtual std::ostream&
+    printDetailTo(std::ostream& ostr) const;
 
 private:
     ElfFile const* elf_file_;
@@ -87,11 +91,5 @@ private:
     bool           is_64bit_;
 };
 
-
-inline std::ostream&
-operator<<(std::ostream& ostr, Section const& section)
-{
-    return section.printTo(ostr);
-}
 
 #endif /* EDHELIND_SECTION_H */

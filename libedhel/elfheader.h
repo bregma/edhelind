@@ -19,6 +19,7 @@
 #ifndef EDHELIND_ELFHEADER_H
 #define EDHELIND_ELFHEADER_H
 
+#include "libedhel/detailable.h"
 #include "libedhel/elf.h"
 #include "libedhel/elfimage.h"
 
@@ -27,6 +28,7 @@
  * Interpret the Ehdr structure at the start of every ELF file.
  */
 class ElfHeader
+: public Detailable
 {
 public:
     ElfHeader(ElfImageView const& imageView);
@@ -95,6 +97,10 @@ public:
     /** Index of string table section header in section header table */
     std::uint16_t
     shstrndx() const;
+
+private:
+    virtual std::ostream&
+    printTo(std::ostream&) const override;
 
 private:
     ElfImageView image_view_;

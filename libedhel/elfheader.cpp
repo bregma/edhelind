@@ -244,4 +244,10 @@ shstrndx() const
                   : image_view_.get_uint16(ehdr32_shstrndx_offset);
 }
 
+std::ostream& ElfHeader::
+printTo(std::ostream& ostr) const
+{
+    ostr << "(@TODO)";
+    return ostr;
+}
 

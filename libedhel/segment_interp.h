@@ -16,31 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EDHELIND_SECTION_STRTAB_H
-#define EDHELIND_SECTION_STRTAB_H
+#ifndef EDHELIND_SEGMENT_INTERP_H
+#define EDHELIND_SEGMENT_INTERP_H
 
-#include "libedhel/section.h"
+#include "libedhel/segment.h"
 
 
 /*!
- * An SHT_STRTAB section
+ * A PH_INTERP segment
  */
-class Section_STRTAB
-: public Section
+class Segment_INTERP
+: public Segment
 {
 public:
-    Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view);
+    Segment_INTERP(ElfFile const& elf_file, ElfImageView const& image_view);
 
-    /*! Retrieve the string at @p index */
+    /** Retrieve the interpreter string */
     std::string
-    string(std::uint32_t index) const;
+    interp() const;
 
 private:
     std::ostream&
     printDetailTo(std::ostream& ostr) const override;
 
 private:
-    ElfImageView string_table_;
+    std::string interp_;
 };
 
-#endif /* EDHELIND_SECTION_STRTAB_H */
+#endif /* EDHELIND_SEGMENT_INTERP_H */

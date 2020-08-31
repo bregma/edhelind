@@ -45,11 +45,15 @@ add_library(libedhel STATIC
     libedhel/elffile.cpp
     libedhel/elfimage.cpp
     libedhel/elfheader.cpp
+    libedhel/note.cpp
     libedhel/section.cpp
     libedhel/sectiontable.cpp
+    libedhel/section_note.cpp
     libedhel/section_strtab.cpp
     libedhel/segment.cpp
-    libedhel/segmenttable.cpp)
+    libedhel/segmenttable.cpp
+    libedhel/segment_interp.cpp
+    libedhel/segment_note.cpp)
 
 
 # Main GUI executable

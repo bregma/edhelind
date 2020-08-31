@@ -20,6 +20,8 @@
 
 #include "libedhel/elffile.h"
 #include "libedhel/segment.h"
+#include "libedhel/segment_note.h"
+#include "libedhel/segment_interp.h"
 #include <stdexcept>
 
 
@@ -40,7 +42,18 @@ SegmentTable(ElfFile const& elfFile)
     {
         auto segmentView = image_view_.view(phoff, phentsize);
         Segment tmpSegment(elfFile, segmentView);
-        segments_.emplace_back(std::make_unique<Segment>(elfFile, segmentView));
+        switch (tmpSegment.type())
+        {
+        case PType::PT_INTERP:
+            segments_.emplace_back(std::make_unique<Segment_INTERP>(elfFile, segmentView));
+            break;
+        case PType::PT_NOTE:
+            segments_.emplace_back(std::make_unique<Segment_NOTE>(elfFile, segmentView));
+            break;
+        default:
+            segments_.emplace_back(std::make_unique<Segment>(elfFile, segmentView));
+            break;
+        }
         
         phoff += phentsize;
     }

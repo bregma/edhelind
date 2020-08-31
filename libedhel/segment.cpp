@@ -156,11 +156,19 @@ align() const
                            : image_view_.get_uint32(phdr32_align_offset);
 }
 
-
 std::ostream& Segment::
 printTo(std::ostream& ostr) const
 {
-    return ostr << "Segment " << this->type_string();
+    ostr << "Segment " << this->type_string() << "\n";
+    return printDetailTo(ostr);
 }
+
+
+std::ostream& Segment::
+printDetailTo(std::ostream& ostr) const
+{
+    return ostr;
+}
+
 
 

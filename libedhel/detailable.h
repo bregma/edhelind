@@ -16,31 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EDHELIND_SECTION_STRTAB_H
-#define EDHELIND_SECTION_STRTAB_H
+#ifndef EDHELIND_DETAILABLE_H
+#define EDHELIND_DETAILABLE_H
 
-#include "libedhel/section.h"
+#include <iosfwd>
 
 
-/*!
- * An SHT_STRTAB section
+/**
+ * Mix-in class to make something get its details printed.
  */
-class Section_STRTAB
-: public Section
+class Detailable
 {
 public:
-    Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view);
-
-    /*! Retrieve the string at @p index */
-    std::string
-    string(std::uint32_t index) const;
-
-private:
-    std::ostream&
-    printDetailTo(std::ostream& ostr) const override;
+    friend std::ostream&
+    operator<<(std::ostream& ostr, Detailable const& detailable)
+    {
+        return detailable.printTo(ostr);
+    }
 
 private:
-    ElfImageView string_table_;
+    virtual std::ostream&
+    printTo(std::ostream&) const = 0;
+
 };
 
-#endif /* EDHELIND_SECTION_STRTAB_H */
+
+
+#endif /* EDHELIND_DETAILABLE_H */

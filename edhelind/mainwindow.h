@@ -53,6 +53,9 @@ private slots:
     void
     on_action_exit_triggered();
 
+    void
+    on_current_changed(const QModelIndex &current, const QModelIndex &previous);
+
 private:
     void
     set_current_file(QString const& file_name);

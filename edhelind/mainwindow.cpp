@@ -23,14 +23,19 @@
 
 #include "libedhel/elffile.h"
 #include "libedhel/section.h"
+#include "libedhel/section_note.h"
 #include "libedhel/segment.h"
+#include "libedhel/segment_interp.h"
+#include "libedhel/segment_note.h"
 #include "mainwindow.h"
+#include <sstream>
 #include "ui_mainwindow.h"
 
 #include <QApplication>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QModelIndex>
 #include <QStandardItem>
 #include <QStandardItemModel>
 
@@ -46,6 +51,9 @@ MainWindow(QString const& file_name, QWidget *parent)
     tree_model_->setHorizontalHeaderLabels(QStringList{tr("Field"),
                                                        tr("Value"),
                                                        tr("Description")});
+
+    connect(ui_->tree_view_->selectionModel(), SIGNAL(currentChanged(QModelIndex const&, QModelIndex const&)),
+            this, SLOT(on_current_changed(QModelIndex const&, QModelIndex const&)));
 }
 
 
@@ -76,6 +84,24 @@ void MainWindow::
 on_action_exit_triggered()
 {
     QApplication::closeAllWindows();
+}
+
+
+void MainWindow::
+on_current_changed(QModelIndex const& current, QModelIndex const&)
+{
+    QVariant v = tree_model_->data(current, Qt::UserRole+1);
+    if (v.isValid() != true)
+    {
+        ui_->text_view_->clear();
+    }
+    else
+    {
+        Detailable const* displayable = static_cast<Detailable const*>(v.value<void*>());
+        std::ostringstream ostr ;
+        ostr << *displayable;
+        ui_->text_view_->setPlainText(QString::fromStdString(ostr.str()));
+    }
 }
 
 
@@ -128,6 +154,7 @@ display_elf_header() const
     header->appendRow(prepare_row("e_shentsize:", QString("0x%1").arg(elf_header.shentsize(), 8, 16, QChar('0'))));
     header->appendRow(prepare_row("e_shnum:", QString("0x%1").arg(elf_header.shnum(), 8, 16, QChar('0'))));
     header->appendRow(prepare_row("e_shstrndx:", QString("0x%1").arg(elf_header.shstrndx(), 8, 16, QChar('0'))));
+    header->setData(QVariant::fromValue((void*)&elf_header), Qt::UserRole+1);
     return header;
 }
 
@@ -146,6 +173,24 @@ display_sections() const
             sec->appendRow(this->prepare_row("sh_link:", QString("0x%1").arg(section.link(), 8, 16, QChar('0'))));
             sec->appendRow(this->prepare_row("sh_info:", QString("0x%1").arg(section.info(), 8, 16, QChar('0'))));
 
+            switch (section.type()) {
+                case SType::SHT_NOTE: {
+                    auto const& pt_note = static_cast<Section_NOTE const&>(section);
+                    pt_note.iterate_notes([&](Note const& note){
+                            QStandardItem* note_row = new QStandardItem(QString("NOTE %1 %2")
+                                                          .arg(QString::fromStdString(note.name_))
+                                                          .arg(note.type_, 8, 10));
+                            note_row->appendRow(this->prepare_row("name:", QString::fromStdString(note.name_)));
+                            note_row->appendRow(this->prepare_row("type:", QString("%1").arg(note.type_, 8, 10)));
+                            note_row->setData(QVariant::fromValue((void*)&note), Qt::UserRole+1);
+                            sec->appendRow(note_row);
+                        });
+                    break;
+                }
+                default:
+                    break;
+            }
+            sec->setData(QVariant::fromValue((void*)&section), Qt::UserRole+1);
             sections->appendRow(sec);
        });
     return sections;
@@ -164,6 +209,29 @@ display_segments() const
             seg->appendRow(this->prepare_row("p_filesz:", QString("%1").arg(segment.filesz(), 8, 10)));
             seg->appendRow(this->prepare_row("p_memsz:", QString("%1").arg(segment.memsz(), 8, 10)));
             seg->appendRow(this->prepare_row("p_align:", QString("%1").arg(segment.align(), 8, 10)));
+            switch (segment.type()) {
+                case PType::PT_INTERP: {
+                    auto const& pt_interp = static_cast<Segment_INTERP const&>(segment);
+                    seg->appendRow(this->prepare_row("interp:", QString::fromStdString(pt_interp.interp())));
+                    break;
+                }
+                case PType::PT_NOTE: {
+                    auto const& pt_note = static_cast<Segment_NOTE const&>(segment);
+                    pt_note.iterate_notes([&](Note const& note){
+                            QStandardItem* note_row = new QStandardItem(QString("NOTE %1 %2")
+                                                          .arg(QString::fromStdString(note.name_))
+                                                          .arg(note.type_, 8, 10));
+                            note_row->appendRow(this->prepare_row("name:", QString::fromStdString(note.name_)));
+                            note_row->appendRow(this->prepare_row("type:", QString("%1").arg(note.type_, 8, 10)));
+                            note_row->setData(QVariant::fromValue((void*)&note), Qt::UserRole+1);
+                            seg->appendRow(note_row);
+                        });
+                    break;
+                }
+                default:
+                    break;
+            }
+            seg->setData(QVariant::fromValue((void*)&segment), Qt::UserRole+1);
             segments->appendRow(seg);
        });
     return segments;

@@ -198,5 +198,11 @@ printTo(std::ostream& ostr) const
          << '\t' << "offset=" << std::showbase << std::hex << offset()
          << '\t' << "size=" << std::dec << size()
          << '\n';
+    return printDetailTo(ostr);
+}
+
+std::ostream& Section::
+printDetailTo(std::ostream& ostr) const
+{
     return ostr;
 }

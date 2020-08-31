@@ -38,8 +38,8 @@ string(std::uint32_t index) const
 
 
 std::ostream& Section_STRTAB::
-printTo(std::ostream& ostr) const
+printDetailTo(std::ostream& ostr) const
 {
-    Section::printTo(ostr) << "some string table" << '\n';
+    ostr << "some string table" << '\n';
     return ostr;
 }

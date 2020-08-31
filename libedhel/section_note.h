@@ -16,31 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EDHELIND_SECTION_STRTAB_H
-#define EDHELIND_SECTION_STRTAB_H
+#ifndef EDHELIND_SECTION_NOTE_H
+#define EDHELIND_SECTION_NOTE_H
 
+#include <functional>
+#include "libedhel/note.h"
 #include "libedhel/section.h"
 
 
 /*!
- * An SHT_STRTAB section
+ * An SHT_NOTE section
  */
-class Section_STRTAB
+class Section_NOTE
 : public Section
 {
 public:
-    Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view);
+    Section_NOTE(ElfFile const& elf_file, ElfImageView const& image_view);
 
-    /*! Retrieve the string at @p index */
-    std::string
-    string(std::uint32_t index) const;
+    void
+    iterate_notes(std::function<void(Note const&)>) const;
 
 private:
     std::ostream&
     printDetailTo(std::ostream& ostr) const override;
 
 private:
-    ElfImageView string_table_;
+    NoteTable note_table_;
 };
 
-#endif /* EDHELIND_SECTION_STRTAB_H */
+#endif /* EDHELIND_SECTION_NOTE_H */

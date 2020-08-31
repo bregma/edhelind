@@ -327,5 +327,25 @@ struct Elf64_Phdr
 };
 static_assert(sizeof(Elf64_Phdr) == 56, "invalid 64-bit ELF PHDR size");
 
+
+/**
+ * The SHT_NOTE sections and PT_NOTE segments contain one or more ELF notes.
+ * An ELF note is a collection of bytes with no pre-defined interpretation
+ * but with an associated name and integral type that can be used by
+ * applications to determine how the content of the note should be
+ * interpreted.  The actual interpretation is specific to the target ABI.
+ *
+ * The note section or segment itself consists of an array of one or more
+ * variable-sized note header structures with 5 fields. The last two fields
+ * are variable-length padded out and aligned on 4-byte boundaries.
+ */
+struct ElfNote
+{
+    std::uint32_t namesz;  /**> length of the name field, including null terminator */
+    std::uint32_t descsz;  /**> length of the data field */
+    std::uint32_t type;    /**> type of the note */
+    char const name[];     /**> name of the note */
+};
+
 #endif /* EDHELIND_ELF_H */
 
