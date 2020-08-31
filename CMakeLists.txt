@@ -26,7 +26,7 @@ if (${CMAKE_VERSION} VERSION_LESS "3.10.0")
     if (MSVC)
         add_compile_options("/std:c++17")
     else()
-        add_compile_options("-std=c++17" "-Wall" "-Wextra")
+        add_compile_options("-std=c++17")
     endif()
 else()
     set(CMAKE_CXX_STANDARD 17)
@@ -59,6 +59,11 @@ add_library(libedhel STATIC
     libedhel/segment_interp.cpp
     libedhel/segment_note.cpp)
 
+target_compile_options(libedhel PRIVATE
+     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+        -Wall -Wextra>
+     $<$<CXX_COMPILER_ID:MSVC>:
+        /W4>)
 
 # Main GUI executable
 add_executable(edhelind

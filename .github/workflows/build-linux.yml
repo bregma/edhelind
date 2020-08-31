@@ -17,7 +17,7 @@ jobs:
       - name: Create Build Directory
         run:  mkdir build
       - name: Configure
-        run:  cd build && cmake -DCMAKE_VERBOSE_MAKEFILE=ON -Dqt=on ..
+        run:  cd build && cmake --version && cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
         env:
           CC: gcc-9
           CXX: g++-9
