@@ -116,11 +116,14 @@ private:
 class ElfImage
 {
 public:
+    using ByteSequence = std::vector<std::byte>;
+
+public:
     /*! Constructs an ElfImage from a named file */
     ElfImage(std::string const& filename);
 
     /*! Constructs an ElfImage from an istream object */
-    ElfImage(std::basic_istream<std::byte>& istr);
+    ElfImage(ByteSequence const& byte_seq);
 
     ElfImage(ElfImage const&) = delete;
 
@@ -172,12 +175,8 @@ public:
     get_string(std::size_t offset, std::size_t maxlen) const;
 
 private:
-    void
-    createFromStream(std::basic_istream<std::byte>& istr);
-
-private:
-    std::vector<std::byte> data_;
-    bool                   is_be_;
+    ByteSequence data_;
+    bool         is_be_;
 };
 
 #endif /* EDHELIND_ELFIMAGE_H */

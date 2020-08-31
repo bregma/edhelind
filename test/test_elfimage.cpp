@@ -22,21 +22,22 @@
 
 
 TEST_CASE("ElfImage functionality") {
-    std::basic_stringstream<std::byte> m_buffer;
-    m_buffer << std::byte(0x01)
-             << std::byte(0x02)
-             << std::byte(0x03)
-             << std::byte(0x04)
-             << std::byte(0x05)
-             << std::byte(0x06)
-             << std::byte(0x07)
-             << std::byte(0x08)
-             << std::byte('t') << std::byte('e') << std::byte('s') << std::byte('t')
-             << std::byte(0x00);
+    ElfImage::ByteSequence  test_image = {
+        std::byte(0x01),
+        std::byte(0x02),
+        std::byte(0x03),
+        std::byte(0x04),
+        std::byte(0x05),
+        std::byte(0x06),
+        std::byte(0x07),
+        std::byte(0x08),
+        std::byte('t'), std::byte('e'), std::byte('s'), std::byte('t'),
+        std::byte(0x00),
+    };
 
 
     SECTION("Verify extraction in little-endian (default) mode") {
-        ElfImage image(m_buffer);
+        ElfImage image(test_image);
 
         CHECK(image.get_uint8(0) == 0x01);
         CHECK(image.get_uint16(0) == 0x0201);
@@ -47,7 +48,7 @@ TEST_CASE("ElfImage functionality") {
 
 
     SECTION("Verify extraction in big-endian mode") {
-        ElfImage image(m_buffer);
+        ElfImage image(test_image);
         image.setBigEndian(true);
 
         CHECK(image.get_uint8(0) == 0x01);
@@ -59,7 +60,7 @@ TEST_CASE("ElfImage functionality") {
 
 
     SECTION("Verify basic ElfImageView functionality") {
-        ElfImage image(m_buffer);
+        ElfImage image(test_image);
 
         auto view = image.view(8, 5);
         CHECK(view.get_string(0, 8) == "test");
