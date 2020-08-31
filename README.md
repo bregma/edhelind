@@ -1,6 +1,10 @@
 edhelind
 ========
 
+![Build on Linux](https://github.com/bregma/edhelind/workflows/Build%20on%20Linux/badge.svg)
+![Build on MacOS](https://github.com/bregma/edhelind/workflows/Build%20on%20MacOS/badge.svg)
+![Build on Windows](https://github.com/bregma/edhelind/workflows/.github/workflows/build-windows.yml/badge.svg)
+
 **edhelind** is an ELF file viewer tool. It provides a graphical user interface
 to view the internals of an Executable and Linkable Format file, the files used
 on a number of operating systems for their executable programs and shared
