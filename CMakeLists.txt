@@ -22,10 +22,14 @@ cmake_minimum_required(VERSION 3.5)
 project(edhelind VERSION 0.1)
 
 # Project-wide configuration
-if (MSVC)
-    add_compile_options("/std:c++17")
+if (${CMAKE_VERSION} VERSION_LESS "3.10.0")
+    if (MSVC)
+        add_compile_options("/std:c++17")
+    else()
+        add_compile_options("-std=c++17" "-Wall" "-Wextra")
+    endif()
 else()
-    add_compile_options("-std=c++17" "-Wall" "-Wextra")
+    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 configure_file(edhelind_config.h.in edhelind_config.h)
