@@ -150,27 +150,10 @@ ElfImage(std::string const& filename)
 
 
 ElfImage::
-ElfImage(std::basic_istream<std::byte>& istr)
-: is_be_(false)
+ElfImage(ByteSequence const& byte_sequence)
+: data_{byte_sequence}
+, is_be_{false}
 {
-    createFromStream(istr);
-}
-
-
-void ElfImage::
-createFromStream(std::basic_istream<std::byte>& istr)
-{
-    istr.seekg(0, std::ios::end);
-    auto fileSize = istr.tellg();
-    if (fileSize > 0)
-    {
-        data_.resize(fileSize);
-        istr.seekg(0, std::ios::beg);
-        if (!istr.read(data_.data(), fileSize))
-        {
-            throw std::runtime_error("error reading from file");
-        }
-    }
 }
 
 
