@@ -22,6 +22,7 @@
 #include "libedhel/elffile.h"
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include "section_strtab.h"
 
 
