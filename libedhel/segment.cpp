@@ -43,6 +43,17 @@ namespace {
         { PType::PT_TLS,     "PT_TLS"     },
     };
 
+    struct FlagsNameMapping {
+        PFlags      flag_;
+        std::string name_;
+    };
+
+    const std::vector<FlagsNameMapping> flags_name_mapping {
+        { FP_X, "FP_X" },
+        { FP_W, "FP_W" },
+        { FP_R, "FP_R" },
+    };
+
     constexpr std::size_t phdr32_type_offset   = offsetof(Elf32_Phdr, p_type);
     constexpr std::size_t phdr32_offset_offset = offsetof(Elf32_Phdr, p_offset);
     constexpr std::size_t phdr32_vaddr_offset  = offsetof(Elf32_Phdr, p_vaddr);
@@ -106,6 +117,34 @@ flags() const
 {
     return this->is_64bit_ ? static_cast<PFlags>(image_view_.get_uint32(phdr64_flags_offset))
                            : static_cast<PFlags>(image_view_.get_uint32(phdr32_flags_offset));
+}
+
+
+std::string Segment::
+flags_string() const
+{
+    using std::ostringstream;
+    using std::setw;
+    using std::setfill;
+    using std::hex;
+
+    ostringstream ostr;
+    PFlags flags = this->flags();
+    std::string sep = " (";
+    ostr << "0x" << setw(8) << setfill('0') << hex << flags;
+    for (auto const& f: flags_name_mapping)
+    {
+        if (f.flag_ & flags)
+        {
+            ostr << sep << f.name_;
+            sep = ", ";
+        }
+    }
+    if (sep != " (")
+    {
+        ostr << ")";
+    }
+    return ostr.str();
 }
 
 

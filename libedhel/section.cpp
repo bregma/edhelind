@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include "libedhel/elffile.h"
+#include <iomanip>
 #include <iostream>
 #include "section_strtab.h"
 
@@ -62,6 +63,22 @@ namespace
         { SType::SHT_ARM_EXIDX,      "SHT_ARM_EXIDX" },
         { SType::SHT_ARM_PREEMPMAP,  "SHT_ARM_PREEMPMAP" },
         { SType::SHT_ARM_ATTRIBUTES, "SHT_ARM_ATTRIBUTES" },
+    };
+
+    struct FlagNameMapping {
+        int         flag_mask_;
+        std::string name_;
+    };
+
+    const std::vector<FlagNameMapping> flag_name_mapping {
+        { Elf::SHF_WRITE,      "WRITE" },
+        { Elf::SHF_ALLOC,      "ALLOC" },
+        { Elf::SHF_EXECINSTR,  "EXEC" },
+        { Elf::SHF_MERGE,      "MERGE" },
+        { Elf::SHF_STRINGS,    "STRINGS" },
+        { Elf::SHF_GROUP,      "GROUP" },
+        { Elf::SHF_TLS,        "TLS" },
+        { Elf::SHF_COMPRESSED, "COMPRESSED" },
     };
 
     constexpr std::size_t shdr32_name_offset      = offsetof(Elf32_Shdr, sh_name);
@@ -138,6 +155,31 @@ flags() const
 {
     return is_64bit_ ? image_view_.get_uint64(shdr64_flags_offset)
                      : image_view_.get_uint32(shdr32_flags_offset);
+}
+
+
+std::string Section::
+flags_string() const
+{
+    using std::setw;
+    using std::setfill;
+    using std::showbase;
+    using std::hex;
+
+    std::ostringstream ostr;
+    std::uint64_t flags = this->flags();
+    std::string sep{" "};
+
+    ostr << "0x" << hex << setfill('0') << setw(8) << flags;
+    for (auto const& f: flag_name_mapping)
+    {
+        if (flags & f.flag_mask_)
+        {
+            ostr << sep << f.name_;
+            sep = ",";
+        }
+    }
+    return ostr.str();
 }
 
 

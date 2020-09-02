@@ -225,19 +225,19 @@ enum class SType: std::uint32_t
     SHT_HIUSER         = 0xffffffff
 };
 
-enum section_flags
+namespace Elf
 {
-    SHF_WRITE       = (1 << 0),   /*!< section should be writable during execution */
-    SHF_ALLOC       = (1 << 1),   /*!< section occupies memory during execution */
-    SHF_EXECINSTR   = (1 << 2),   /*!< section containes executable instructions */
-    SHF_MERGE       = (1 << 3),   /*!< section may be merged to prevent duplication */
-    SHF_STRINGS     = (1 << 4),   /*!< section contains null-terminated character strings */
-    SHF_GROUP       = (1 << 9),   /*!< section is a member of a group */
-    SHF_TLS         = (1 << 10),  /*!< section holds thread-local storage */
-    SHF_COMPRESSED  = (1 << 11),  /*!< section is compressed */
-    SHF_MASKOS      = 0x0ff00000, /*!< OS-specific flags mask */
-    SHF_MASKPROC    = 0xf0000000  /*!< processor-specific flags mask */
-};
+    constexpr inline int SHF_WRITE      = (1 << 0);   /*!< section should be writable during execution */
+    constexpr inline int SHF_ALLOC      = (1 << 1);   /*!< section occupies memory during execution */
+    constexpr inline int SHF_EXECINSTR  = (1 << 2);   /*!< section containes executable instructions */
+    constexpr inline int SHF_MERGE      = (1 << 3);   /*!< section may be merged to prevent duplication */
+    constexpr inline int SHF_STRINGS    = (1 << 4);   /*!< section contains NTCS */
+    constexpr inline int SHF_GROUP      = (1 << 9);   /*!< section is a member of a group */
+    constexpr inline int SHF_TLS        = (1 << 10);  /*!< section holds thread-local storage */
+    constexpr inline int SHF_COMPRESSED = (1 << 11);  /*!< section is compressed */
+    constexpr inline int SHF_MASKOS     = 0x0ff00000; /*!< OS-specific flags mask */
+    constexpr inline int SHF_MASKPROC   = 0xf0000000; /*!< processor-specific flags mask */
+} // namespace Elf
 
 struct Elf32_Shdr
 {
@@ -269,6 +269,12 @@ struct Elf64_Shdr
 };
 static_assert(sizeof(Elf64_Shdr) == 64, "invalid 64-bit section header size");
 
+/** @} */
+
+/**
+ * @defgroup Program (segment) header
+ * @{
+ */
 /** @todo add extension-range predicates instead of enum values */
 enum class PType: std::uint32_t {
     PT_NULL = 0,                /**> Program header table,entry unused */
@@ -293,13 +299,12 @@ enum class PType: std::uint32_t {
 };
 
 /** @todo make this a bitset with extension-range predicates */
-enum class PFlags: std::uint32_t {
-    PF_X = (1 << 0),            /**> Segment is executable */
-    PF_W = (1 << 1),            /**> Segment is writable */
-    PF_R = (1 << 2),            /**> Segment is readable */
-    PF_MASKOS = 0x0ff00000,     /**> OS-specific */
-    PF_MASKPROC = 0xf0000000,   /**> Processor-specific */
-};
+using PFlags = std::uint32_t;
+constexpr inline PFlags FP_X = (1 << 0);           /**> Segment is executable */
+constexpr inline PFlags FP_W = (1 << 1);           /**> Segment is writable */
+constexpr inline PFlags FP_R = (1 << 2);           /**> Segment is readable */
+constexpr inline PFlags FP_MASKOS = 0x0ff00000;    /**> OS-specific */
+constexpr inline PFlags FP_MASKPROC = 0xf0000000;  /**> Processor-specific */
 
 struct Elf32_Phdr
 {
@@ -327,6 +332,7 @@ struct Elf64_Phdr
 };
 static_assert(sizeof(Elf64_Phdr) == 56, "invalid 64-bit ELF PHDR size");
 
+/** @} */
 
 /**
  * The SHT_NOTE sections and PT_NOTE segments contain one or more ELF notes.

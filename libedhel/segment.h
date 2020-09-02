@@ -46,6 +46,9 @@ public:
     PFlags
     flags() const;
 
+    std::string
+    flags_string() const;
+
     std::uint64_t
     offset() const;
 

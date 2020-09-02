@@ -53,6 +53,10 @@ public:
     std::uint64_t
     flags() const;
 
+    /**! The section flags as a string */
+    std::string
+    flags_string() const;
+
     std::uint64_t
     addr() const;
 

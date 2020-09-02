@@ -148,12 +148,12 @@ display_elf_header() const
     header->appendRow(prepare_row("e_phoff:", QString("0x%1").arg(elf_header.phoff(), 8, 16, QChar('0'))));
     header->appendRow(prepare_row("e_shoff:", QString("0x%1").arg(elf_header.shoff(), 8, 16, QChar('0'))));
     header->appendRow(prepare_row("e_flags:", QString("0x%1").arg(elf_header.flags(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_ehsize:", QString("0x%1").arg(elf_header.ehsize(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_phentsize:", QString("0x%1").arg(elf_header.phentsize(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_phnum:", QString("0x%1").arg(elf_header.phnum(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_shentsize:", QString("0x%1").arg(elf_header.shentsize(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_shnum:", QString("0x%1").arg(elf_header.shnum(), 8, 16, QChar('0'))));
-    header->appendRow(prepare_row("e_shstrndx:", QString("0x%1").arg(elf_header.shstrndx(), 8, 16, QChar('0'))));
+    header->appendRow(prepare_row("e_ehsize:", QString("%1").arg(elf_header.ehsize(), 8, 10)));
+    header->appendRow(prepare_row("e_phentsize:", QString("%1").arg(elf_header.phentsize(), 8, 10)));
+    header->appendRow(prepare_row("e_phnum:", QString("%1").arg(elf_header.phnum(), 8, 10)));
+    header->appendRow(prepare_row("e_shentsize:", QString("%1").arg(elf_header.shentsize(), 8, 10)));
+    header->appendRow(prepare_row("e_shnum:", QString("%1").arg(elf_header.shnum(), 8, 10)));
+    header->appendRow(prepare_row("e_shstrndx:", QString("%1").arg(elf_header.shstrndx(), 8, 10)));
     header->setData(QVariant::fromValue((void*)&elf_header), Qt::UserRole+1);
     return header;
 }
@@ -166,10 +166,10 @@ display_sections() const
     elf_file_->section_table().iterate_sections([&](Section const& section){
             QStandardItem* sec = new QStandardItem(QString::fromStdString(section.name_string()));
             sec->appendRow(this->prepare_row("sh_type:", QString::fromStdString(section.type_string())));
-            sec->appendRow(this->prepare_row("sh_flags:", QString("0x%1").arg(section.flags(), 8, 16, QChar('0'))));
+            sec->appendRow(this->prepare_row("sh_flags:", QString::fromStdString(section.flags_string())));
             sec->appendRow(this->prepare_row("sh_addr:", QString("0x%1").arg(section.addr(), 8, 16, QChar('0'))));
             sec->appendRow(this->prepare_row("sh_offset:", QString("0x%1").arg(section.offset(), 8, 16, QChar('0'))));
-            sec->appendRow(this->prepare_row("sh_size:", QString("0x%1").arg(section.size(), 8, 10)));
+            sec->appendRow(this->prepare_row("sh_size:", QString("%1").arg(section.size(), 8, 10)));
             sec->appendRow(this->prepare_row("sh_link:", QString("0x%1").arg(section.link(), 8, 16, QChar('0'))));
             sec->appendRow(this->prepare_row("sh_info:", QString("0x%1").arg(section.info(), 8, 16, QChar('0'))));
 
@@ -203,6 +203,7 @@ display_segments() const
     QStandardItem* segments = new QStandardItem("Segments");
     elf_file_->segment_table().iterate_segments([&](Segment const& segment){
             QStandardItem* seg = new QStandardItem(QString::fromStdString(segment.type_string()));
+            seg->appendRow(this->prepare_row("p_flags:", QString::fromStdString(segment.flags_string())));
             seg->appendRow(this->prepare_row("p_offset:", QString("0x%1").arg(segment.offset(), 8, 16, QChar('0'))));
             seg->appendRow(this->prepare_row("p_vaddr:", QString("0x%1").arg(segment.vaddr(), 8, 16, QChar('0'))));
             seg->appendRow(this->prepare_row("p_paddr:", QString("0x%1").arg(segment.paddr(), 8, 16, QChar('0'))));
