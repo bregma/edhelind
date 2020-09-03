@@ -19,6 +19,7 @@
 #include "libedhel/section_strtab.h"
 
 #include "libedhel/elffile.h"
+#include <iomanip>
 #include <iostream>
 
 
@@ -37,9 +38,25 @@ string(std::uint32_t index) const
 }
 
 
+void Section_STRTAB::
+iterate_strings(std::function<void(std::uint32_t, std::string)> visit) const
+{
+    std::uint32_t offset{0};
+    while (offset < string_table_.size())
+    {
+        std::string value{string_table_.get_string(offset, std::string::npos)};
+        visit(offset, value);
+        offset += value.size() + 1;
+    }
+}
+
+
 std::ostream& Section_STRTAB::
 printDetailTo(std::ostream& ostr) const
 {
-    ostr << "some string table" << '\n';
+    this->iterate_strings([&](std::uint32_t offset, std::string value){
+        ostr << "0x" << std::setw(8) << std::setfill('0') << std::hex << offset
+             << ": " << value << "\n";
+    });
     return ostr;
 }

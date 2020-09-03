@@ -19,6 +19,7 @@
 #ifndef EDHELIND_SECTION_STRTAB_H
 #define EDHELIND_SECTION_STRTAB_H
 
+#include <functional>
 #include "libedhel/section.h"
 
 
@@ -31,9 +32,18 @@ class Section_STRTAB
 public:
     Section_STRTAB(ElfFile const& elf_file, ElfImageView const& image_view);
 
-    /*! Retrieve the string at @p index */
+    /** Retrieve the string at @p index */
     std::string
     string(std::uint32_t index) const;
+
+    /**
+     * Visit each string in the string table
+     *
+     * Parameters passed to the visitor are offset into the table and the string
+     * itself.
+     */
+    void
+    iterate_strings(std::function<void(std::uint32_t, std::string)> visit) const;
 
 private:
     std::ostream&
