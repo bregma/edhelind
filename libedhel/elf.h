@@ -335,6 +335,9 @@ static_assert(sizeof(Elf64_Phdr) == 56, "invalid 64-bit ELF PHDR size");
 /** @} */
 
 /**
+ * @defgroup Notes
+ * @{
+ *
  * The SHT_NOTE sections and PT_NOTE segments contain one or more ELF notes.
  * An ELF note is a collection of bytes with no pre-defined interpretation
  * but with an associated name and integral type that can be used by
@@ -353,5 +356,33 @@ struct ElfNote
     char const name[];     /**> name of the note */
 };
 
+/** @} */
+
+/**
+ * @defgroup Symbol Tables
+ * @{
+ */
+struct Elf32_Sym
+{
+  std::uint32_t st_name;		/**< string table index of symbol name */
+  std::uint32_t st_value;		/**< symbol value */
+  std::uint32_t st_size;		/**< symbol size */
+  std::uint8_t  st_info;		/**< symbol type and binding */
+  std::uint8_t  st_other;		/**< symbol visibility */
+  std::uint16_t st_shndx;		/**< section index */
+};
+
+struct Elf64_Sym
+{
+  std::uint32_t st_name;		/**< string table index of symbol name */
+  std::uint8_t  st_info;		/**< symbol type and binding */
+  std::uint8_t  st_other;		/**< symbol visibility */
+  std::uint16_t st_shndx;		/**< section index */
+  std::uint64_t st_value;		/**< symbol value */
+  std::uint64_t st_size;		/**< symbol size */
+};
+
+
+/** @} */
 #endif /* EDHELIND_ELF_H */
 

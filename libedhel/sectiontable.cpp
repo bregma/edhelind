@@ -22,6 +22,7 @@
 #include "libedhel/section.h"
 #include "libedhel/section_note.h"
 #include "libedhel/section_strtab.h"
+#include "libedhel/section_symtab.h"
 #include <stdexcept>
 
 
@@ -50,6 +51,10 @@ SectionTable(ElfFile const& elfFile)
 
             case SType::SHT_STRTAB:
                 sections_.emplace_back(std::make_unique<Section_STRTAB>(elfFile, sectionView));
+                break;
+
+            case SType::SHT_SYMTAB:
+                sections_.emplace_back(std::make_unique<Section_SYMTAB>(elfFile, sectionView));
                 break;
 
             default:

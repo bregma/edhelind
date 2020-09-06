@@ -54,10 +54,12 @@ add_library(libedhel STATIC
     libedhel/sectiontable.cpp
     libedhel/section_note.cpp
     libedhel/section_strtab.cpp
+    libedhel/section_symtab.cpp
     libedhel/segment.cpp
     libedhel/segmenttable.cpp
     libedhel/segment_interp.cpp
-    libedhel/segment_note.cpp)
+    libedhel/segment_note.cpp
+    libedhel/symbol.cpp)
 
 target_compile_options(libedhel PRIVATE
      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
