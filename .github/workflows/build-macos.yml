@@ -2,8 +2,11 @@
 name: Build on MacOS
 on:
   push:
+    branches:
+      - trunk
   pull_request:
-    branches: trunk
+    branches:
+      - trunk
 
 jobs:
   build-macos:
