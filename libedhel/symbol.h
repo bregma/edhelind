@@ -155,10 +155,36 @@ public:
     printTo(std::ostream& ostr) const override;
 
 private:
+    virtual std::uint32_t
+    get_name() const = 0;
+
+    virtual std::uint64_t
+    get_value() const= 0;
+
+    virtual std::uint64_t
+    get_size() const = 0;
+
+    virtual st_shndx_t
+    get_shndx() const = 0;
+
+    virtual st_info_t
+    get_info() const = 0;
+
+    virtual st_other_t
+    get_other() const = 0;
+
+protected:
     ElfFile const* elf_file_;
     ElfImageView   image_view_;
     std::uint32_t  strndx_;
 };
+
+
+/**
+ * Factory function to create a Symbol from an ElfImageView on an ElfFile
+ */
+std::unique_ptr<Symbol>
+make_symbol(ElfFile const& elf_file, ElfImageView const& image_view, std::uint32_t strndx);
 
 #endif /* EDHELIND_SYMBOL_H */
 

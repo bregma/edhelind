@@ -27,12 +27,12 @@ Section_SYMTAB::
 Section_SYMTAB(ElfFile const& elf_file, ElfImageView const& image_view)
 : Section(elf_file, image_view)
 {
-    const std::size_t symbol_size = elf_file.is_64bit() ? sizeof(Elf64_Sym) : sizeof(Elf32_Sym);
+    const std::size_t symbol_size = elf_file.is_64bit() ? sizeof(Elf64::Sym) : sizeof(Elf32::Sym);
     for (std::size_t offset = 0; offset < this->size(); offset += symbol_size)
     {
-        symbol_table_.emplace_back(elf_file,
-                                   elf_file.view(this->offset() + offset, symbol_size),
-                                   this->link());
+        symbol_table_.emplace_back(make_symbol(elf_file,
+                                               elf_file.view(this->offset() + offset, symbol_size),
+                                               this->link()));
     }
 }
 
@@ -40,7 +40,7 @@ Section_SYMTAB(ElfFile const& elf_file, ElfImageView const& image_view)
 Symbol const& Section_SYMTAB::
 symbol(std::uint32_t index) const
 {
-    return symbol_table_.at(index);
+    return *symbol_table_.at(index);
 }
 
 
@@ -49,7 +49,7 @@ iterate_symbols(std::function<void(Symbol const&)> visit) const
 {
     for (auto const& symbol: symbol_table_)
     {
-        visit(symbol);
+        visit(*symbol);
     }
 }
 

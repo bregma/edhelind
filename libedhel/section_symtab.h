@@ -22,6 +22,7 @@
 #include <functional>
 #include "libedhel/section.h"
 #include "libedhel/symbol.h"
+#include <memory>
 #include <vector>
 
 
@@ -38,9 +39,7 @@ public:
     Symbol const&
     symbol(std::uint32_t index) const;
 
-    /**
-     * Visit each symbol in the symbol table
-     */
+    /** Visit each symbol in the symbol table */
     void
     iterate_symbols(std::function<void(Symbol const&)> visit) const;
 
@@ -49,7 +48,7 @@ private:
     printDetailTo(std::ostream& ostr) const override;
 
 private:
-    std::vector<Symbol> symbol_table_;
+    std::vector<std::unique_ptr<Symbol>> symbol_table_;
 };
 
 #endif /* EDHELIND_SECTION_SYMTAB_H */

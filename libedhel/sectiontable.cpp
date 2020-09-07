@@ -53,6 +53,7 @@ SectionTable(ElfFile const& elfFile)
                 sections_.emplace_back(std::make_unique<Section_STRTAB>(elfFile, sectionView));
                 break;
 
+            case SType::SHT_DYNSYM:
             case SType::SHT_SYMTAB:
                 sections_.emplace_back(std::make_unique<Section_SYMTAB>(elfFile, sectionView));
                 break;

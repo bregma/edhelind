@@ -358,31 +358,31 @@ struct ElfNote
 
 /** @} */
 
-/**
- * @defgroup Symbol Tables
- * @{
- */
-struct Elf32_Sym
+namespace Elf32
 {
-  std::uint32_t st_name;		/**< string table index of symbol name */
-  std::uint32_t st_value;		/**< symbol value */
-  std::uint32_t st_size;		/**< symbol size */
-  std::uint8_t  st_info;		/**< symbol type and binding */
-  std::uint8_t  st_other;		/**< symbol visibility */
-  std::uint16_t st_shndx;		/**< section index */
-};
+    struct Sym
+    {
+        std::uint32_t st_name;	/**< string table index of symbol name */
+        std::uint32_t st_value;	/**< symbol value */
+        std::uint32_t st_size;	/**< symbol size */
+        std::uint8_t  st_info;	/**< symbol type and binding */
+        std::uint8_t  st_other;	/**< symbol visibility */
+        std::uint16_t st_shndx;	/**< section index */
+    };
+} // Elf32
 
-struct Elf64_Sym
+namespace Elf64
 {
-  std::uint32_t st_name;		/**< string table index of symbol name */
-  std::uint8_t  st_info;		/**< symbol type and binding */
-  std::uint8_t  st_other;		/**< symbol visibility */
-  std::uint16_t st_shndx;		/**< section index */
-  std::uint64_t st_value;		/**< symbol value */
-  std::uint64_t st_size;		/**< symbol size */
-};
+    struct Sym
+    {
+        std::uint32_t st_name;	/**< string table index of symbol name */
+        std::uint8_t  st_info;	/**< symbol type and binding */
+        std::uint8_t  st_other;	/**< symbol visibility */
+        std::uint16_t st_shndx;	/**< section index */
+        std::uint64_t st_value;	/**< symbol value */
+        std::uint64_t st_size;	/**< symbol size */
+    };
+} // Elf64
 
-
-/** @} */
 #endif /* EDHELIND_ELF_H */
 

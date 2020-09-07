@@ -81,20 +81,99 @@ namespace
     };
     const std::string st_other_other{"(OTHER)"};
 
-    constexpr std::size_t st32_name_offset  = offsetof(Elf32_Sym, st_name);
-    constexpr std::size_t st32_value_offset = offsetof(Elf32_Sym, st_value);
-    constexpr std::size_t st32_size_offset  = offsetof(Elf32_Sym, st_size);
-    constexpr std::size_t st32_info_offset  = offsetof(Elf32_Sym, st_info);
-    constexpr std::size_t st32_other_offset = offsetof(Elf32_Sym, st_other);
-    constexpr std::size_t st32_shndx_offset = offsetof(Elf32_Sym, st_shndx);
 
-    constexpr std::size_t st64_name_offset  = offsetof(Elf64_Sym, st_name);
-    constexpr std::size_t st64_value_offset = offsetof(Elf64_Sym, st_value);
-    constexpr std::size_t st64_size_offset  = offsetof(Elf64_Sym, st_size);
-    constexpr std::size_t st64_info_offset  = offsetof(Elf64_Sym, st_info);
-    constexpr std::size_t st64_other_offset = offsetof(Elf64_Sym, st_other);
-    constexpr std::size_t st64_shndx_offset = offsetof(Elf64_Sym, st_shndx);
+    class Symbol32
+    : public Symbol
+    {
+    public:
+        Symbol32(ElfFile const& elf_file, ElfImageView const& image_view, std::uint32_t strndx)
+        : Symbol(elf_file, image_view, strndx)
+        { }
 
+    private:
+        std::uint32_t
+        get_name() const override
+        {
+            return image_view_.get_uint32(offsetof(Elf32::Sym, st_name));
+        }
+
+        std::uint64_t
+        get_value() const override
+        {
+            return image_view_.get_uint32(offsetof(Elf32::Sym, st_value));
+        }
+
+        std::uint64_t
+        get_size() const override
+        {
+            return image_view_.get_uint32(offsetof(Elf32::Sym, st_size));
+        }
+
+        st_shndx_t
+        get_shndx() const override
+        {
+            return image_view_.get_uint16(offsetof(Elf32::Sym, st_shndx));
+        }
+
+        st_info_t
+        get_info() const override
+        {
+            return image_view_.get_uint8(offsetof(Elf32::Sym, st_info));
+        }
+
+        st_other_t
+        get_other() const override
+        {
+            return image_view_.get_uint8(offsetof(Elf32::Sym, st_other));
+        }
+    };
+
+
+    class Symbol64
+    : public Symbol
+    {
+    public:
+        Symbol64(ElfFile const& elf_file, ElfImageView const& image_view, std::uint32_t strndx)
+        : Symbol(elf_file, image_view, strndx)
+        { }
+
+    private:
+        std::uint32_t
+        get_name() const override
+        {
+            return image_view_.get_uint32(offsetof(Elf64::Sym, st_name));
+        }
+
+        std::uint64_t
+        get_value() const override
+        {
+            return image_view_.get_uint64(offsetof(Elf64::Sym, st_value));
+        }
+
+        std::uint64_t
+        get_size() const override
+        {
+            return image_view_.get_uint64(offsetof(Elf64::Sym, st_size));
+        }
+
+        st_shndx_t
+        get_shndx() const override
+        {
+            return image_view_.get_uint16(offsetof(Elf64::Sym, st_shndx));
+        }
+
+        st_info_t
+        get_info() const override
+        {
+            return image_view_.get_uint8(offsetof(Elf64::Sym, st_info));
+        }
+
+        st_other_t
+        get_other() const override
+        {
+            return image_view_.get_uint8(offsetof(Elf64::Sym, st_other));
+        }
+    };
 } // anonymous
 
 
@@ -110,8 +189,7 @@ Symbol(ElfFile const& elf_file, ElfImageView const& image_view, std::uint32_t st
 std::uint32_t Symbol::
 name() const
 {
-    return elf_file_->is_64bit() ? image_view_.get_uint32(st64_name_offset)
-                                 : image_view_.get_uint32(st32_name_offset);
+    return this->get_name();
 }
 
 
@@ -131,24 +209,21 @@ name_string() const
 std::uint64_t Symbol::
 value() const
 {
-    return elf_file_->is_64bit() ? image_view_.get_uint64(st64_value_offset)
-                                 : image_view_.get_uint32(st32_value_offset);
+    return this->get_value();
 }
 
 
 std::uint64_t Symbol::
 size() const
 {
-    return elf_file_->is_64bit() ? image_view_.get_uint64(st64_size_offset)
-                                 : image_view_.get_uint32(st32_size_offset);
+    return this->get_size();
 }
 
 
 st_shndx_t Symbol::
 shndx() const
 {
-    return elf_file_->is_64bit() ? image_view_.get_uint16(st64_shndx_offset)
-                                 : image_view_.get_uint16(st32_shndx_offset);
+    return this->get_shndx();
 }
 
 
@@ -180,8 +255,7 @@ shndx_string() const
 st_info_t Symbol::
 info() const
 {
-    return elf_file_->is_64bit() ? image_view_.get_uint8(st64_info_offset)
-                                 : image_view_.get_uint8(st32_info_offset);
+    return this->get_info();
 }
 
 
@@ -232,7 +306,7 @@ type_string() const
 st_other_t Symbol::
 other() const
 {
-    return 0;
+    return this->get_other();
 }
 
 
@@ -272,3 +346,12 @@ printTo(std::ostream& ostr) const
 }
 
 
+std::unique_ptr<Symbol>
+make_symbol(ElfFile const& elf_file, ElfImageView const& image_view, std::uint32_t strndx)
+{
+    using std::make_unique;
+
+    if (elf_file.is_64bit())
+        return make_unique<Symbol64>(elf_file, image_view, strndx);
+    return make_unique<Symbol32>(elf_file, image_view, strndx);
+}
