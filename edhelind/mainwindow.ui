@@ -91,7 +91,13 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPlainTextEdit" name="text_view_"/>
+          <widget class="QPlainTextEdit" name="text_view_">
+           <property name="font">
+            <font>
+             <family>DejaVu Sans Mono</family>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
